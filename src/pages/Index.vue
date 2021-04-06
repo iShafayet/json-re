@@ -16,7 +16,7 @@
           color="primary"
           label="Generate schema"
           icon-right="send"
-          style="margin-top: 10px; width: 100%"
+          style="margin-top: 20px; width: 100%;"
           @click="jsonInputDoneClicked"
         />
       </div>
@@ -24,6 +24,23 @@
         <div class="column-title">Step 2. Preview schema pseudocode</div>
         <div class="preview-schema-container">
           <code v-html="schemaPreviewText"></code>
+        </div>
+        <q-select
+        v-if="isSchemaPreviewSuccessful"
+          outlined
+          v-model="target.type"
+          :options="targetTypes"
+          label="Select target type"
+          style="margin-top: 20px; width: 100%"
+        />
+        <div v-if="target.type && target.type.value == 'java-pojo'">
+          <q-btn
+            color="primary"
+            label="Generate Java POJO"
+            icon-right="send"
+            style="margin-top: 20px; width: 100%;"
+            @click="generateJavaPojoClicked"
+          />
         </div>
       </div>
       <div class="col main-column output-column">
@@ -40,6 +57,20 @@ export default {
   name: "PageIndex",
   data() {
     return {
+      isSchemaPreviewSuccessful: false,
+      targetTypes: [
+        {
+          label: "Java POJO",
+          value: "java-pojo"
+        },
+        {
+          label: "SQL Tables",
+          value: "sql-tables"
+        }
+      ],
+      target: {
+        type: null
+      },
       // inputText: "{\n\n}",
       inputText: JSON.stringify(
         [
@@ -92,6 +123,9 @@ export default {
     };
   },
   methods: {
+    generateJavaPojoClicked() {
+      alert("Under construction");
+    },
     prettyPrintSchemaAsHtml(schema, name = "&lt;root&gt;", indent = "") {
       let output = "";
 
@@ -118,13 +152,14 @@ export default {
           output += this.prettyPrintSchemaAsHtml(
             schema.keys[key],
             key,
-            indent + "  "
+            indent + '<span class="st-div"></span>'
           );
         }
       }
       return output;
     },
     jsonInputDoneClicked() {
+      this.isSchemaPreviewSuccessful = false;
       try {
         let inputJson = JSON.parse(this.inputText);
 
@@ -136,9 +171,11 @@ export default {
         console.log(pretty);
 
         this.schemaPreviewText = pretty;
+
+        this.isSchemaPreviewSuccessful = true;
       } catch (ex) {
         console.error(ex);
-        this.schemaPreviewText = ex.message;
+        this.schemaPreviewText = `<span style="color: red;">${ex.message}</span>`;
       }
     }
   }
@@ -167,7 +204,7 @@ export default {
 .input-textarea-container textarea {
   font-family: "Courier New", Courier, monospace;
   resize: none !important;
-  max-height: calc(60vh - 3px)  !important;
+  max-height: calc(60vh - 3px) !important;
 }
 
 .column-title {
