@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       appVersion: "0.0.1",
-      appBuild: 1
+      appBuild: 4
     };
   }
 };
