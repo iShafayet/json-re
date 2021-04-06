@@ -6,6 +6,9 @@ node_modules
 .quasar
 /dist
 
+# To work with gh-pages
+/docs
+
 # Cordova related directories and files
 /src-cordova/node_modules
 /src-cordova/platforms
