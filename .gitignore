@@ -7,7 +7,7 @@ node_modules
 /dist
 
 # To work with gh-pages
-/docs
+# /docs
 
 # Cordova related directories and files
 /src-cordova/node_modules
