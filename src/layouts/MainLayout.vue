@@ -29,7 +29,7 @@ export default {
   components: {},
   data() {
     return {
-      appVersion: "0.0.1"
+      appVersion: "0.0.1-3"
     };
   }
 };
