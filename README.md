@@ -1,26 +1,33 @@
-# JSON R.E. Toolkit (json-re)
+# JSON R.E. Toolkit &lt;json-re&gt;
 
-JSON Reverse Engineering Toolkit
+Generate Java POJOs, SQL tables, MongoDb schemas, Joi validation directly from JSON.
 
-## Install the dependencies
+![JSON Reverse Engineering Toolkit](src/assets/welcome-graphics-1.png "JSON Reverse Engineering Toolkit")
+
+
+# For users
+
+This service is available at [https://ishafayet.github.io/json-re](https://ishafayet.github.io/json-re)
+
+# For developers
+
+### Install the dependencies
 ```bash
 yarn
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
-```
-
-### Lint the files
-```bash
-yarn run lint
+yarn run dev
 ```
 
 ### Build the app for production
 ```bash
-quasar build
+yarn run build
 ```
 
-### Customize the configuration
-See [Configuring quasar.conf.js](https://v1.quasar.dev/quasar-cli/quasar-conf-js).
+# Author and License
+
+License: [MIT LICENSE](LICENSE)
+
+2021 © Sayem Shafayet
