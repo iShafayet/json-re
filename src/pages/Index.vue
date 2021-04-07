@@ -1,7 +1,7 @@
 <template>
   <q-page class="page">
     <div class="row">
-      <div class="col main-column input-column">
+      <div class="col-md-4 col-xs-12 main-column input-column">
         <div class="column-title">Step 1. Input JSON</div>
         <div class="input-textarea-container">
           <q-input
@@ -20,13 +20,13 @@
           @click="jsonInputDoneClicked"
         />
       </div>
-      <div class="col main-column processing-column">
+      <div class="col-md-4 col-xs-12 main-column processing-column">
         <div class="column-title">Step 2. Preview schema pseudocode</div>
         <div class="preview-schema-container">
           <code v-html="schemaPreviewText"></code>
         </div>
         <q-select
-        v-if="isSchemaPreviewSuccessful"
+          v-if="isSchemaPreviewSuccessful"
           outlined
           v-model="target.type"
           :options="targetTypes"
@@ -43,8 +43,22 @@
           />
         </div>
       </div>
-      <div class="col main-column output-column">
-        <div class="column-title">Step 3. Generate deserialization code</div>
+      <div class="col-md-4 col-xs-12 main-column output-column">
+        <div class="column-title">Step 3. Enjoy generated code</div>
+        <div class="output-container">
+          <div
+            class="output-box"
+            v-for="outputFile in generatedOutputFileList"
+            :key="outputFile.name"
+          >
+            <div class="output-box-title">{{ outputFile.name }}</div>
+            <div>
+              <code
+                ><pre>{{ outputFile.content }}</pre></code
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </q-page>
@@ -52,6 +66,8 @@
 
 <script>
 import { JsonRe } from "../components/json-re-core.js";
+import { JsonReSchemaToJavaPojoConverter } from "../components/json-re-to-java-pojo.js";
+import * as fixtures from "../components/fixtures.js";
 
 export default {
   name: "PageIndex",
@@ -72,59 +88,19 @@ export default {
         type: null
       },
       // inputText: "{\n\n}",
-      inputText: JSON.stringify(
-        [
-          {
-            userId: 1,
-            name: {
-              first: "Abdur",
-              last: "Rahim"
-            },
-            country: "Bangladesh",
-            age: 23,
-            favoriteNumbers: [1, 4, 1],
-            lastLogin: null
-          },
-          {
-            userId: 2,
-            name: {
-              first: "Abd",
-              middle: "Bin",
-              last: "Karim"
-            },
-            country: "Saudi Arabia",
-            age: 43,
-            favoriteNumbers: [333],
-            lastLogin: "2021-04-06T09:32:07.911Z"
-          },
-          {
-            userId: 3,
-            name: {
-              first: "John",
-              last: null
-            },
-            country: "United States",
-            age: 34,
-            favoriteNumbers: [32, 4343, 34]
-          },
-          {
-            userId: 4,
-            name: null,
-            country: "Canada",
-            isUnderage: true,
-            age: "5",
-            favoriteNumbers: [9]
-          }
-        ],
-        null,
-        2
-      ),
-      schemaPreviewText: ""
+      inputText: JSON.stringify(fixtures.sampleInput, null, 2),
+      schema: null,
+      schemaPreviewText: "",
+      generatedOutputFileList: [],
+      showWelcomeDialog: true
     };
   },
   methods: {
     generateJavaPojoClicked() {
-      alert("Under construction");
+      let converter = new JsonReSchemaToJavaPojoConverter();
+      let generated = converter.convert(this.schema);
+      console.log({ generated });
+      this.generatedOutputFileList = generated;
     },
     prettyPrintSchemaAsHtml(schema, name = "&lt;root&gt;", indent = "") {
       let output = "";
@@ -165,10 +141,11 @@ export default {
 
         let jsonRe = new JsonRe();
         let schema = jsonRe.process(inputJson);
+        this.schema = schema;
         console.log("Schema", schema);
 
         let pretty = this.prettyPrintSchemaAsHtml(schema);
-        console.log(pretty);
+        // console.log(pretty);
 
         this.schemaPreviewText = pretty;
 
@@ -215,9 +192,9 @@ export default {
   padding: 10px;
   background: #f2f2f2;
   height: 60vh;
+  overflow: scroll;
 }
-</style>
-<style lang="scss">
+
 .st-name {
   color: rgb(255, 0, 106);
 }
@@ -235,5 +212,19 @@ export default {
   display: inline-block;
   min-width: 20px;
   min-height: 1px;
+}
+
+.output-container {
+  padding: 10px;
+  background: #f2f2f2;
+  height: 60vh;
+  max-height: 60vh;
+  overflow: scroll;
+}
+
+.output-box-title {
+  background: #e2e2e2;
+  padding: 10px;
+  text-align: right;
 }
 </style>
