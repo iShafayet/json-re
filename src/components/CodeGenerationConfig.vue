@@ -7,6 +7,7 @@
         :options="targetTypes"
         label="Select target type"
         style="margin-top: 20px; width: 100%"
+        @input="generateCode"
       />
 
       <div style="margin-top: 20px;"></div>

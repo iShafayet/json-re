@@ -1,4 +1,4 @@
-const sampleInput = [
+const sampleInput1 = [
   {
     userId: 1,
     name: {
@@ -18,24 +18,7 @@ const sampleInput = [
         title: "Hello 2",
         body: "World 1"
       }
-    ],
-    test: {
-      a: 1,
-      b: 1,
-      C: 1,
-      D: 1,
-      E: 1,
-      f: 1,
-      g: 1,
-      H: 1,
-      I: 1,
-      J: 1,
-      K: 1,
-      L: 1,
-      M: 1,
-      N: 1,
-      O: 1
-    }
+    ]
   },
   {
     userId: 2,
@@ -77,4 +60,28 @@ const sampleInput = [
   }
 ];
 
-export { sampleInput };
+const sampleInput2 = [
+  {
+    userId: 1,
+    name: {
+      first: "Abdur",
+      last: "Rahim"
+    },
+    country: "Bangladesh",
+    age: 23,
+    favoriteNumbers: [1, 4, 1],
+    lastLogin: null,
+    articles: [
+      {
+        title: "Hello",
+        body: "World"
+      },
+      {
+        title: "Hello 2",
+        body: "World 1"
+      }
+    ]
+  }
+];
+
+export { sampleInput1, sampleInput2 };

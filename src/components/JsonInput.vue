@@ -37,6 +37,8 @@ export default {
     },
 
     inputTextChanged() {
+      this.errorMessage = "";
+
       let json = null;
       try {
         json = JSON.parse(this.inputText);
