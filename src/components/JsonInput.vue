@@ -1,14 +1,13 @@
 <template>
   <div class="section-column input-column">
     <div class="input-textarea-container">
-      <q-input
-        class="input-textarea"
+      <prism-editor
+        class="json-editor height-300"
         v-model="inputText"
-        filled
-        type="textarea"
-        rows="40"
-        @input="inputTextChanged"
-      />
+        :highlight="highlighter"
+        :line-numbers="true"
+        @input="inputTextChangedInternal"
+      ></prism-editor>
     </div>
 
     <div class="error-message" v-html="errorMessage" v-if="errorMessage"></div>
@@ -20,9 +19,20 @@ import * as fixtures from "../components/fixtures.js";
 
 import { JsonRe } from "../components/json-re-core.js";
 
+import Prism from "prismjs";
+import "prismjs/components/prism-json";
+
+import { PrismEditor } from "vue-prism-editor";
+import "vue-prism-editor/dist/prismeditor.min.css";
+
+import { debounce } from "debounce";
+
 export default {
   name: "JsonInput",
   props: {},
+  components: {
+    PrismEditor
+  },
   data() {
     return {
       // inputText: "{\n\n}",
@@ -32,11 +42,20 @@ export default {
     };
   },
   methods: {
+    highlighter(code) {
+      return Prism.highlight(code, Prism.languages.json, "json");
+    },
+
     kickstart() {
       this.inputTextChanged();
     },
 
+    inputTextChangedInternal: debounce(function(e) {
+      this.inputTextChanged();
+    }, 200),
+
     inputTextChanged() {
+      console.log(this.inputText);
       this.errorMessage = "";
 
       let json = null;
@@ -75,21 +94,22 @@ export default {
 
 <style lang="scss">
 .input-column {
+  * {
+    font-family: "Courier New", Courier, monospace !important;
+  }
   .input-textarea-container {
     height: 80vh !important;
     background: #f2f2f2;
   }
 
-  // NOTE this forces the style on all textarea
-  .input-textarea-container textarea {
-    font-family: "Courier New", Courier, monospace;
-    resize: none !important;
-    max-height: calc(80vh - 3px) !important;
-    padding: 6px !important;
+  .json-editor {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 5px;
   }
 
-  .input-textarea-container .q-field__control {
-    padding: 0px !important;
+  .prism-editor__textarea:focus {
+    outline: none;
   }
 
   .error-message {

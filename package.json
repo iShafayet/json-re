@@ -14,8 +14,10 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "core-js": "^3.6.5",
+    "debounce": "^1.2.1",
     "prismjs": "^1.23.0",
-    "quasar": "^1.0.0"
+    "quasar": "^1.0.0",
+    "vue-prism-editor": "^1.2.2"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",
