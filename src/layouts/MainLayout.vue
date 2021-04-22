@@ -107,12 +107,13 @@ export default {
     if (localStorage.getItem(welcomeDialogKey)) {
       showWelcomeDialog = false;
     } else {
-      localStorage.setItem(welcomeDialogKey, "yes");
+      // TODO: Do this with a do not show again checkbox.
+      // localStorage.setItem(welcomeDialogKey, "yes");
     }
 
     return {
-      showWelcomeDialog,
-      appVersion: "0.0.1",
+      showWelcomeDialog: false,
+      appVersion: "0.0.2",
       tag: " (POC)",
       appBuild: 5
     };

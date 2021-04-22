@@ -17,7 +17,7 @@ class JsonReSchemaToJavaPojoConverter {
       schema = schema.childKey;
     }
 
-    console.log(schema);
+    // console.log(schema);
     // Code should never reach here.
     if (schema.type !== "object") {
       throw new Error("Unforseen event: Expected Object.");
@@ -99,7 +99,7 @@ class JsonReSchemaToJavaPojoConverter {
 
     for (let key in pojo.fields) {
       let field = pojo.fields[key];
-      console.log(field);
+      // console.log(field);
       content += `${indent}private ${field.javaType}${
         field.isArray ? "[]" : ""
       } ${field.name};\n`;

@@ -13,8 +13,22 @@ function toPascalCase(string) {
 function toCamelCase(string) {
   string = toPascalCase(string);
   if (string.length === 0) return string;
-  string = string[0].toUpperCase() + string.substring(1);
+  string = string[0].toLowerCase() + string.substring(1);
   return string;
 }
 
-export { toPascalCase, toCamelCase };
+function toSnakeCase(inputString) {
+  inputString = toCamelCase(inputString);
+  return inputString
+    .split("")
+    .map(character => {
+      if (character == character.toUpperCase()) {
+        return "_" + character.toLowerCase();
+      } else {
+        return character;
+      }
+    })
+    .join("");
+}
+
+export { toPascalCase, toCamelCase, toSnakeCase };
