@@ -25,9 +25,8 @@
 
 <script>
 import Prism from "prismjs";
-import PJava from "prismjs/components/prism-java";
-import PSql from "prismjs/components/prism-sql";
-console.log(PJava, PSql);
+import "prismjs/components/prism-java";
+import "prismjs/components/prism-sql";
 
 export default {
   name: "CodeOutput",
@@ -54,8 +53,6 @@ export default {
     displayOutput() {
       if (this.generated === null) return;
 
-      console.log(Prism.languages);
-
       let language = "javascript";
       let languageLibrary = Prism.languages.javascript;
       if (this.target.type.value === "sql-tables") {
@@ -70,8 +67,6 @@ export default {
       for (let item of list) {
         item.content = Prism.highlight(item.content, languageLibrary, language);
       }
-
-      console.log({ list });
 
       this.generatedOutputFileList = list;
     }

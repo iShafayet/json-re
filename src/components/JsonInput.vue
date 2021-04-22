@@ -55,7 +55,6 @@ export default {
     }, 200),
 
     inputTextChanged() {
-      console.log(this.inputText);
       this.errorMessage = "";
 
       let json = null;
@@ -92,6 +91,7 @@ export default {
 };
 </script>
 
+<style lang="scss" src="../css/prism.scss"></style>
 <style lang="scss">
 .input-column {
   * {
