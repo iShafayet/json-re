@@ -125,7 +125,8 @@ class JsonReSchemaToSqlConverter {
       }
       if (field.foreignKeyOf) {
         content += `${delimiter}\n`;
-        content += `${indent}${indent}CONSTRAINT fk_${toSnakeCase(field.name)} FOREIGN KEY (${toSnakeCase(field.name)}) \n`;
+        content += `${indent}${indent}CONSTRAINT fk_${toSnakeCase(field.name)} \n`;
+        content += `${indent}${indent}FOREIGN KEY (${toSnakeCase(field.name)}) \n`;
         content += `${indent}${indent}REFERENCES ${field.foreignKeyOf}(id)`;
       }
       content += `${delimiter}\n`;

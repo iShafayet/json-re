@@ -12,9 +12,10 @@
         >
           <div class="output-box-title">{{ outputFile.name }}</div>
           <div>
-            <code
-              ><pre>{{ outputFile.content }}</pre></code
-            >
+            <pre><code v-html="outputFile.content"> </code></pre>
+            <!-- <code
+              ><pre>{{ outputFile.content }}</pre>
+            </code> -->
           </div>
         </div>
       </div>
@@ -23,6 +24,10 @@
 </template>
 
 <script>
+import Prism from "prismjs";
+import "prismjs/components/prism-java";
+import "prismjs/components/prism-sql";
+
 export default {
   name: "CodeOutput",
   props: {
@@ -47,14 +52,35 @@ export default {
   methods: {
     displayOutput() {
       if (this.generated === null) return;
-      this.generatedOutputFileList = this.generated;
+
+      let language = "javascript";
+      let languageLibrary = Prism.languages.javascript;
+      if (this.target.type.value === "sql-tables") {
+        language = "sql";
+        languageLibrary = Prism.languages.sql;
+      } else if (this.target.type.value === "java-pojo") {
+        language = "java";
+        languageLibrary = Prism.languages.java;
+      }
+
+      let list = this.generated;
+      for (let item of list) {
+        item.content = Prism.highlight(item.content, languageLibrary, language);
+      }
+
+      this.generatedOutputFileList = list;
     }
   }
 };
 </script>
 
+<style lang="scss" src="../css/prism.scss"></style>
 <style lang="scss">
 .code-output-column {
+  * {
+    font-family: "Courier New", Courier, monospace !important;
+  }
+
   .output-container {
     padding: 10px;
     background: #f2f2f2;
