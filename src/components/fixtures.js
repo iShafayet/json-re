@@ -1,5 +1,8 @@
 const sampleInput1 = [
   {
+    a: null,
+    b: null,
+    c: null,
     userId: 1,
     name: {
       first: "Abdur",
@@ -21,6 +24,7 @@ const sampleInput1 = [
     ]
   },
   {
+    b: "sdsds",
     userId: 2,
     name: {
       first: "Abd",

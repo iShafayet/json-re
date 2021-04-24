@@ -110,8 +110,28 @@ class JsonReSchemaToJavaPojoConverter {
     pojo.content = content;
   }
 
-  convert(schema) {
+  _convertNullToNullableString(schema) {
+    if (schema.type === "array") {
+      return this._convertNullToNullableString(schema.childKey);
+    } else if (schema.type === "object") {
+      for (let key in schema.keys) {
+        this._convertNullToNullableString(schema.keys[key]);
+      }
+      return;
+    } else if (schema.type === "null") {
+      schema.type = "string";
+      schema.allowNull = true;
+      return;
+    }
+  }
+
+  convert(schema, target) {
     schema = JSON.parse(JSON.stringify(schema));
+
+    if (target.treatNullAsString) {
+      this._convertNullToNullableString(schema);
+    }
+
     this._makePojo(schema, "RootObject");
 
     for (let key in this.pojos) {
