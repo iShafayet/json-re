@@ -59,12 +59,12 @@
 
           <div style="font-weight: bold;">How it works?</div>
           <div style="margin-left: 8px;">
-            1. Enter your JSON data. <br />
+            1. Enter your JSON. <br />
             2. JSON R.E. Toolkit will intelligently reverse engineer it and
             generate schema.
             <br />
-            3. From the schema we can instantly generate your Java POJO, SQL
-            Tables, MongoDb Schema, Joi validation.
+            3. From the schema we can instantly generate Java POJO, SQL
+            Tables, MongoDb Schema, Joi validation and more.
           </div>
 
           <div style="margin-top: 20px; text-align: center;">
@@ -112,7 +112,7 @@ export default {
     }
 
     return {
-      showWelcomeDialog: false,
+      showWelcomeDialog: true,
       appVersion: "0.0.2",
       tag: " (POC)",
       appBuild: 1
