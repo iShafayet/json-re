@@ -21,7 +21,6 @@ const sampleInput1 = [
     ]
   },
   {
-    b: "sdsds",
     userId: 2,
     name: {
       first: "Abd",
