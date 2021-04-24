@@ -1,8 +1,5 @@
 const sampleInput1 = [
   {
-    a: null,
-    b: null,
-    c: null,
     userId: 1,
     name: {
       first: "Abdur",

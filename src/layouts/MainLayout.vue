@@ -25,7 +25,6 @@
 
     <q-dialog
       v-model="showWelcomeDialog"
-      persistent
       transition-show="flip-down"
       transition-hide="flip-up"
     >
@@ -63,8 +62,8 @@
             2. JSON R.E. Toolkit will intelligently reverse engineer it and
             generate schema.
             <br />
-            3. From the schema we can instantly generate Java POJO, SQL
-            Tables, MongoDb Schema, Joi validation and more.
+            3. From the schema we can instantly generate Java POJO, SQL Tables,
+            MongoDb Schema, Joi validation and more.
           </div>
 
           <div style="margin-top: 20px; text-align: center;">
