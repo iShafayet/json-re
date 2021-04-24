@@ -91,7 +91,7 @@ export default {
   methods: {
     generateJavaPojo() {
       let converter = new JsonReSchemaToJavaPojoConverter();
-      let generated = converter.convert(this.schema);
+      let generated = converter.convert(this.schema, this.target);
 
       console.log({ generated });
       this.generated = generated;
@@ -103,7 +103,7 @@ export default {
 
     generateSql() {
       let converter = new JsonReSchemaToSqlConverter();
-      let generated = converter.convert(this.schema);
+      let generated = converter.convert(this.schema, this.target);
 
       console.log({ generated });
       this.generated = generated;

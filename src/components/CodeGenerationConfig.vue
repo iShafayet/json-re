@@ -12,8 +12,9 @@
 
       <div style="margin-top: 20px;"></div>
       <q-checkbox
-        v-model="treatNullAsString"
-        label="Treat null values as nullable string"
+        v-model="target.treatNullAsString"
+        label="Treat null values as nullable string."
+        @input="generateCode"
       />
     </div>
   </div>
@@ -30,8 +31,6 @@ export default {
   },
   data() {
     return {
-      treatNullAsString: true,
-
       targetTypes: [
         {
           label: "Java POJO",
@@ -44,12 +43,14 @@ export default {
       ],
       target: {
         type: {
-          label: "SQL Tables",
-          value: "sql-tables"
-        }
+          label: "Java POJO",
+          value: "java-pojo"
+        },
+        treatNullAsString: true
       }
     };
   },
+
   methods: {
     kickstart() {
       this.generateCode();
@@ -57,11 +58,6 @@ export default {
 
     generateCode() {
       this.$emit("config-updated", this.target);
-    }
-  },
-  watch: {
-    schema() {
-      // console.log(this.schema)
     }
   }
 };
