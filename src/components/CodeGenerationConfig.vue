@@ -45,7 +45,7 @@ export default {
         type: {
           label: "Java POJO",
           value: "java-pojo"
-        },
+        }
       }
     };
   },

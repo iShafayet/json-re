@@ -127,8 +127,6 @@ export default {
   components: { JsonInput, SchemaPreview, CodeGenerationConfig, CodeOutput },
   data() {
     return {
-      $q: null, // to suppress editor errors.
-
       isUnified: false,
       unifiedTab: "json",
       inputTab: "json",
