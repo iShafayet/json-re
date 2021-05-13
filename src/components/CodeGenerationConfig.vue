@@ -15,11 +15,6 @@
         />
 
         <div style="margin-top: 20px;"></div>
-        <q-checkbox
-          v-model="target.treatNullAsString"
-          label="Treat null values as nullable string."
-          @input="generateCode"
-        />
       </div>
     </div>
   </div>
@@ -51,7 +46,6 @@ export default {
           label: "Java POJO",
           value: "java-pojo"
         },
-        treatNullAsString: true
       }
     };
   },

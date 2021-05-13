@@ -95,4 +95,19 @@ let prettyPrintSchema = (schema, name = "<root>", indent = "") => {
   return output;
 };
 
-export { JsonRe, prettyPrintSchema };
+let convertNullToNullableString = schema => {
+  if (schema.type === "array") {
+    return convertNullToNullableString(schema.childKey);
+  } else if (schema.type === "object") {
+    for (let key in schema.keys) {
+      convertNullToNullableString(schema.keys[key]);
+    }
+    return;
+  } else if (schema.type === "null") {
+    schema.type = "string";
+    schema.allowNull = true;
+    return;
+  }
+};
+
+export { JsonRe, prettyPrintSchema, convertNullToNullableString };

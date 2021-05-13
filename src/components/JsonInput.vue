@@ -11,13 +11,22 @@
     </div>
 
     <div class="error-message" v-html="errorMessage" v-if="errorMessage"></div>
+
+    <div style="margin-top: 10px;"></div>
+    <q-checkbox
+      v-model="treatNullAsString"
+      label="Treat null values as nullable string."
+    />
   </div>
 </template>
 
 <script>
 import * as fixtures from "../components/fixtures.js";
 
-import { JsonRe } from "../components/json-re-core.js";
+import {
+  JsonRe,
+  convertNullToNullableString
+} from "../components/json-re-core.js";
 
 import Prism from "prismjs";
 import "prismjs/components/prism-json";
@@ -38,7 +47,8 @@ export default {
       // inputText: "{\n\n}",
       inputText: JSON.stringify(fixtures.sampleInput1, null, 2),
       errorMessage: "",
-      enableDoneButton: true
+      enableDoneButton: true,
+      treatNullAsString: true
     };
   },
   methods: {
@@ -79,6 +89,10 @@ export default {
         let jsonRe = new JsonRe();
         schema = jsonRe.process(json);
 
+        if (this.treatNullAsString){
+          convertNullToNullableString(schema);
+        }
+
         console.log({ schema });
       } catch (ex) {
         console.warn(ex);
@@ -98,7 +112,7 @@ export default {
     font-family: "Courier New", Courier, monospace !important;
   }
   .input-textarea-container {
-    height: 80vh !important;
+    height: calc(80vh - 60px) !important;
     background: #f2f2f2;
   }
 

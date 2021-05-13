@@ -18,7 +18,8 @@ const sampleInput1 = [
         title: "Hello 2",
         body: "World 1"
       }
-    ]
+    ],
+    preferredLanguage: null
   },
   {
     userId: 2,
