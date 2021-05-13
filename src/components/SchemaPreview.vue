@@ -2,7 +2,7 @@
   <div class="section-column processing-column">
     <div class="preview-schema-container">
       <div v-if="!schema" class="no-schema-message">
-        Enter a valid json data in the previous tab to continue.
+        Enter a valid json data in the first tab to continue.
       </div>
       <code v-html="schemaPreviewText" v-if="schema"></code>
     </div>
@@ -68,7 +68,7 @@ export default {
   .preview-schema-container {
     padding: 10px;
     background: #f2f2f2;
-    height: calc(80vh - 24px);
+    height: calc(80vh);
     overflow: auto;
   }
 
@@ -92,6 +92,7 @@ export default {
   }
 
   .no-schema-message {
+    font-family: "Courier New", Courier, monospace !important;
     width: 100%;
     text-align: center;
     margin-top: 100px;

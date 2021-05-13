@@ -2,7 +2,7 @@
   <div class="section-column code-output-column">
     <div class="output-container">
       <div v-if="!schema" class="no-schema-message">
-        Enter a valid json data in the previous tab to continue.
+        Enter a valid json data in the first tab to continue.
       </div>
       <div v-if="schema">
         <div
