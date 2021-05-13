@@ -4,7 +4,7 @@
     <q-tabs
       mobile-arrows
       outside-arrows
-      v-if="$q.platform.is.mobile"
+      v-if="isUnified"
       v-model="unifiedTab"
       inline-label
       align="justify"
@@ -12,7 +12,7 @@
       class="bg-primary text-white shadow-1 input-tabs"
     >
       <q-tab name="json" icon="code" label="JSON" />
-      <q-tab name="schema" icon="preview" label="Schema preview" />
+      <q-tab name="schema" icon="preview" label="Schema editor" />
       <q-tab name="configuration" icon="settings" label="Configure output" />
       <q-tab name="generated" icon="code" label="Generated code" />
     </q-tabs>
@@ -22,17 +22,14 @@
     <div class="row">
       <!-- input columns - start -->
       <div
-        class="column col col-xs-12 col-sm-6"
+        class="column col"
+        :class="{ 'col-6': !isUnified, 'col-12': isUnified }"
         :hidden="
-          !(
-            $q.platform.is.mobile &&
-            unifiedTab !== 'json' &&
-            unifiedTab !== 'schema'
-          )
+          !(isUnified && unifiedTab !== 'json' && unifiedTab !== 'schema')
         "
       >
         <q-tabs
-          v-if="!$q.platform.is.mobile"
+          v-if="!isUnified"
           v-model="inputTab"
           inline-label
           align="justify"
@@ -40,21 +37,21 @@
           class="bg-primary text-white shadow-1 input-tabs"
         >
           <q-tab name="json" icon="code" label="JSON" />
-          <q-tab name="schema" icon="preview" label="Schema preview" />
+          <q-tab name="schema" icon="preview" label="Schema editor" />
         </q-tabs>
 
         <JsonInput
           :hidden="
-            (!$q.platform.is.mobile && inputTab !== 'json') ||
-              ($q.platform.is.mobile && unifiedTab !== 'json')
+            (!isUnified && inputTab !== 'json') ||
+              (isUnified && unifiedTab !== 'json')
           "
           @schema-generated="schemaGenerated"
           ref="jsonInputRef"
         />
         <SchemaPreview
           :hidden="
-            (!$q.platform.is.mobile && inputTab !== 'schema') ||
-              ($q.platform.is.mobile && unifiedTab !== 'schema')
+            (!isUnified && inputTab !== 'schema') ||
+              (isUnified && unifiedTab !== 'schema')
           "
           ref="schemaPreviewRef"
         />
@@ -63,17 +60,18 @@
 
       <!-- output columns - start -->
       <div
-        class="column col col-xs-12 col-sm-6"
+        class="column col"
+        :class="{ 'col-6': !isUnified, 'col-12': isUnified }"
         :hidden="
           !(
-            $q.platform.is.mobile &&
+            isUnified &&
             unifiedTab !== 'configuration' &&
             unifiedTab !== 'generated'
           )
         "
       >
         <q-tabs
-          v-if="!$q.platform.is.mobile"
+          v-if="!isUnified"
           v-model="outputTab"
           inline-label
           align="justify"
@@ -89,8 +87,8 @@
 
         <CodeOutput
           :hidden="
-            (!$q.platform.is.mobile && outputTab !== 'generated') ||
-              ($q.platform.is.mobile && unifiedTab !== 'generated')
+            (!isUnified && outputTab !== 'generated') ||
+              (isUnified && unifiedTab !== 'generated')
           "
           :schema="schema"
           :target="target"
@@ -99,8 +97,8 @@
         />
         <CodeGenerationConfig
           :hidden="
-            (!$q.platform.is.mobile && outputTab !== 'configuration') ||
-              ($q.platform.is.mobile && unifiedTab !== 'configuration')
+            (!isUnified && outputTab !== 'configuration') ||
+              (isUnified && unifiedTab !== 'configuration')
           "
           :schema="schema"
           @config-updated="configUpdated"
@@ -131,6 +129,7 @@ export default {
     return {
       $q: null, // to suppress editor errors.
 
+      isUnified: false,
       unifiedTab: "json",
       inputTab: "json",
       outputTab: "generated",
@@ -143,6 +142,8 @@ export default {
   },
 
   mounted() {
+    this.isUnified = this.$q.platform.is.mobile;
+    this.isUnified = true; // for testing
     this.$refs.configRef.kickstart();
     this.$refs.jsonInputRef.kickstart();
   },
