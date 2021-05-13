@@ -10,13 +10,18 @@
       ></prism-editor>
     </div>
 
-    <div class="error-message" v-html="errorMessage" v-if="errorMessage"></div>
+    <div
+      class="error-message row items-center"
+      v-html="errorMessage"
+      v-if="errorMessage"
+    ></div>
 
-    <div style="margin-top: 10px;"></div>
-    <q-checkbox
-      v-model="treatNullAsString"
-      label="Treat null values as nullable string."
-    />
+    <div class="config-area" v-if="!errorMessage">
+      <q-checkbox
+        v-model="treatNullAsString"
+        label="Treat null values as nullable string."
+      />
+    </div>
   </div>
 </template>
 
@@ -89,7 +94,7 @@ export default {
         let jsonRe = new JsonRe();
         schema = jsonRe.process(json);
 
-        if (this.treatNullAsString){
+        if (this.treatNullAsString) {
           convertNullToNullableString(schema);
         }
 
@@ -112,7 +117,7 @@ export default {
     font-family: "Courier New", Courier, monospace !important;
   }
   .input-textarea-container {
-    height: calc(80vh - 60px) !important;
+    height: calc(80vh - 40px) !important;
     background: #f2f2f2;
   }
 
@@ -127,7 +132,16 @@ export default {
   }
 
   .error-message {
-    color: red;
+    padding-left: 12px;
+    height: 40px;
+    color: rgb(255, 255, 255);
+    background: #cc3f3f;
+    font-weight: bold;
+  }
+
+  .config-area {
+    height: 40px;
+    background: #cfcdcd;
   }
 }
 </style>
