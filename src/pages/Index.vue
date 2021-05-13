@@ -1,9 +1,38 @@
 <template>
   <q-page class="page index-page">
+    <!-- mobile-tabs - start -->
+    <q-tabs
+      mobile-arrows
+      outside-arrows
+      v-if="$q.platform.is.mobile"
+      v-model="unifiedTab"
+      inline-label
+      align="justify"
+      raised
+      class="bg-primary text-white shadow-1 input-tabs"
+    >
+      <q-tab name="json" icon="code" label="JSON" />
+      <q-tab name="schema" icon="preview" label="Schema preview" />
+      <q-tab name="configuration" icon="settings" label="Configure output" />
+      <q-tab name="generated" icon="code" label="Generated code" />
+    </q-tabs>
+    <!-- mobile-tabs - end -->
+
+    <!-- desktop-tabs - start -->
     <div class="row">
       <!-- input columns - start -->
-      <div class="column col">
+      <div
+        class="column col col-xs-12 col-sm-6"
+        :hidden="
+          !(
+            $q.platform.is.mobile &&
+            unifiedTab !== 'json' &&
+            unifiedTab !== 'schema'
+          )
+        "
+      >
         <q-tabs
+          v-if="!$q.platform.is.mobile"
           v-model="inputTab"
           inline-label
           align="justify"
@@ -15,17 +44,36 @@
         </q-tabs>
 
         <JsonInput
-          :hidden="inputTab !== 'json'"
+          :hidden="
+            (!$q.platform.is.mobile && inputTab !== 'json') ||
+              ($q.platform.is.mobile && unifiedTab !== 'json')
+          "
           @schema-generated="schemaGenerated"
           ref="jsonInputRef"
         />
-        <SchemaPreview :hidden="inputTab !== 'schema'" ref="schemaPreviewRef" />
+        <SchemaPreview
+          :hidden="
+            (!$q.platform.is.mobile && inputTab !== 'schema') ||
+              ($q.platform.is.mobile && unifiedTab !== 'schema')
+          "
+          ref="schemaPreviewRef"
+        />
       </div>
       <!-- input columns - end -->
 
       <!-- output columns - start -->
-      <div class="column col">
+      <div
+        class="column col col-xs-12 col-sm-6"
+        :hidden="
+          !(
+            $q.platform.is.mobile &&
+            unifiedTab !== 'configuration' &&
+            unifiedTab !== 'generated'
+          )
+        "
+      >
         <q-tabs
+          v-if="!$q.platform.is.mobile"
           v-model="outputTab"
           inline-label
           align="justify"
@@ -40,14 +88,20 @@
         </q-tabs>
 
         <CodeOutput
-          :hidden="outputTab !== 'generated'"
+          :hidden="
+            (!$q.platform.is.mobile && outputTab !== 'generated') ||
+              ($q.platform.is.mobile && unifiedTab !== 'generated')
+          "
           :schema="schema"
           :target="target"
           :generated="generated"
           ref="codeOutputRef"
         />
         <CodeGenerationConfig
-          :hidden="outputTab !== 'configuration'"
+          :hidden="
+            (!$q.platform.is.mobile && outputTab !== 'configuration') ||
+              ($q.platform.is.mobile && unifiedTab !== 'configuration')
+          "
           :schema="schema"
           @config-updated="configUpdated"
           ref="configRef"
@@ -55,6 +109,7 @@
       </div>
       <!-- output columns - end -->
     </div>
+    <!-- desktop-tabs - end -->
   </q-page>
 </template>
 
@@ -74,9 +129,13 @@ export default {
   components: { JsonInput, SchemaPreview, CodeGenerationConfig, CodeOutput },
   data() {
     return {
+      $q: null, // to suppress editor errors.
+
+      unifiedTab: "json",
       inputTab: "json",
       outputTab: "generated",
       // outputTab: "configuration",
+
       target: null,
       schema: null,
       generated: null
