@@ -1,9 +1,11 @@
 # JSON R.E. Toolkit &lt;json-re&gt;
 
-Generate Java POJOs, SQL tables, MongoDb schemas, Joi validation directly from JSON.
+Generate Java POJOs & SQL tables directly from JSON.
 
 ![JSON Reverse Engineering Toolkit](src/assets/welcome-graphics-1.png "JSON Reverse Engineering Toolkit")
 
+*Coming soon - MongoDb Schema, Mongoose, Joi validation, TypeScript
+objects, SQL sequelize.*
 
 # For users
 
