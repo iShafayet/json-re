@@ -2,7 +2,12 @@
 
 Generate Java POJOs & SQL tables directly from JSON.
 
-![JSON Reverse Engineering Toolkit](src/assets/welcome-graphics-1.png "JSON Reverse Engineering Toolkit")
+![JSON Reverse Engineering Toolkit - Screenshot](src/assets/screenshot.png "JSON Reverse Engineering Toolkit - Screenshot")
+
+How it works?
+1. Enter your JSON.
+2. JSON R.E. Toolkit will intelligently reverse engineer it and generate schema.
+3. From the schema we can instantly generate Java POJO, SQL Tables and more.
 
 *Coming soon - MongoDb Schema, Mongoose, Joi validation, TypeScript
 objects, SQL sequelize.*
