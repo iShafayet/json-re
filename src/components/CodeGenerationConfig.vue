@@ -15,6 +15,30 @@
         />
 
         <div style="margin-top: 20px;"></div>
+
+        <div class="java-pojo-options" v-if="target.type.value == 'java-pojo'">
+          <div class="option-group">
+            <div class="option-group-title">
+              Apply javax.validation.constraints
+            </div>
+            <q-checkbox
+              v-model="target.options.javaxValidations"
+              label="Generate validation annotations"
+            />
+          </div>
+          <div class="option-group">
+            <div class="option-group-title">
+              Apply lombok annotations
+            </div>
+            <q-checkbox v-model="target.options.lombokGetter" label="@Getter" />
+            <q-checkbox v-model="target.options.lombokSetter" label="@Setter" />
+            <q-checkbox
+              v-model="target.options.lombokBuilder"
+              label="@Builder"
+            />
+            <q-checkbox v-model="target.options.lombokData" label="@Data" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -45,6 +69,13 @@ export default {
         type: {
           label: "Java POJO",
           value: "java-pojo"
+        },
+        options: {
+          javaxValidations: true,
+          lombokGetter: true,
+          lombokSetter: true,
+          lombokData: true,
+          lombokBuilder: true
         }
       }
     };
@@ -76,6 +107,15 @@ export default {
     width: 100%;
     text-align: center;
     margin-top: 100px;
+  }
+
+  .java-pojo-options {
+    padding: 8px;
+  }
+
+  .option-group-title {
+    font-size: 16px;
+    margin-top: 20px;
   }
 }
 </style>
