@@ -40,7 +40,8 @@ class JsonReSchemaToJavaPojoConverter {
 
       pojo.fields[key] = {
         name: key,
-        javaType: null
+        javaType: null,
+        schema: value
       };
 
       if (value.type === "array") {
@@ -73,16 +74,49 @@ class JsonReSchemaToJavaPojoConverter {
     }
   }
 
-  _generatePojoContent(pojo) {
-    const indent = "    ";
-    let content = `public class ${pojo.name} {\n`;
+  _generatePojoContent(pojo, target) {
+    let { options } = target;
 
-    for (let key in pojo.fields) {
+    const indent = "    ";
+
+    let classAnnotations = [];
+    if (options.lombokGetter) classAnnotations.push("@Getter");
+    if (options.lombokSetter) classAnnotations.push("@Setter");
+    if (options.lombokData) classAnnotations.push("@Data");
+    if (options.lombokBuilder) classAnnotations.push("@Builder");
+    if (classAnnotations.length !== 0) classAnnotations.push("");
+
+    let content = classAnnotations.join("\n") + `public class ${pojo.name} {\n`;
+
+    let keys = Object.keys(pojo.fields);
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
       let field = pojo.fields[key];
-      // console.log(field);
+
+      if (options.javaxValidations) {
+        if (!field.schema.allowNull) {
+          content += `${indent}@NotNull\n`;
+        }
+        if (
+          field.schema.type === "string" &&
+          "minLen" in field.schema &&
+          "maxLen" in field.schema
+        ) {
+          content += `${indent}@Size(min=${field.schema.minLen}, max=${field.schema.maxLen})\n`;
+        }
+        if (
+          field.schema.type === "number" &&
+          "min" in field.schema &&
+          "max" in field.schema
+        ) {
+          content += `${indent}@Min(value=${field.schema.min})\n`;
+          content += `${indent}@Max(value=${field.schema.max})\n`;
+        }
+      }
       content += `${indent}private ${field.javaType}${
         field.isArray ? "[]" : ""
       } ${field.name};\n`;
+      if (options.javaxValidations && i !== keys.length - 1) content += "\n";
     }
 
     content += "}\n";
@@ -97,7 +131,7 @@ class JsonReSchemaToJavaPojoConverter {
     this._makePojo(schema, pojoName);
 
     for (let key in this.pojos) {
-      this._generatePojoContent(this.pojos[key]);
+      this._generatePojoContent(this.pojos[key], target);
     }
 
     let keys = Object.keys(this.pojos);

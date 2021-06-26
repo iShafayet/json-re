@@ -28,6 +28,7 @@ class JsonRe {
     if (schema.type && schema.type !== type) {
       if (this.opt.onNullCollision === "allow" && type === "null") {
         schema.allowNull = true;
+        schema.hadNullCollision = true;
         return;
       }
 
