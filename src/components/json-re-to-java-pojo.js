@@ -41,7 +41,9 @@ class JsonReSchemaToJavaPojoConverter {
 
       if (value.type === "object") {
         // Object
-        let valueName = toPascalCase(key) + "Object";
+        let valueName = value.preferredName
+          ? value.preferredName
+          : toPascalCase(key) + "Object";
         this._makePojo(value, valueName);
         pojo.fields[key].javaType = valueName;
       } else if (value.type === "array") {
@@ -52,7 +54,9 @@ class JsonReSchemaToJavaPojoConverter {
         pojo.fields[key].isArray = true;
         if (value.type === "object") {
           // Object
-          let valueName = toPascalCase(key) + "Object";
+          let valueName = value.preferredName
+            ? value.preferredName
+            : toPascalCase(key) + "Object";
           this._makePojo(value, valueName);
           pojo.fields[key].javaType = valueName;
         } else if (value.type === "array") {
@@ -113,7 +117,22 @@ class JsonReSchemaToJavaPojoConverter {
   convert(schema, target) {
     schema = JSON.parse(JSON.stringify(schema));
 
-    this._makePojo(schema, "RootObject");
+    let preferredName = "RootObject";
+    if (schema.type === "object") {
+      if (schema.preferredName) {
+        preferredName = schema.preferredName;
+      }
+    }
+    if (
+      schema.type === "array" &&
+      schema.childKey &&
+      schema.childKey.type === "object"
+    ) {
+      if (schema.childKey.preferredName) {
+        preferredName = schema.childKey.preferredName;
+      }
+    }
+    this._makePojo(schema, preferredName);
 
     for (let key in this.pojos) {
       this._generatePojoContent(this.pojos[key]);

@@ -6,7 +6,7 @@
         v-model="inputText"
         :highlight="highlighter"
         :line-numbers="true"
-        @input="inputTextChangedInternal"
+        @input="inputTextChangedDebouncer"
       ></prism-editor>
     </div>
 
@@ -41,9 +41,12 @@ import "vue-prism-editor/dist/prismeditor.min.css";
 
 import { debounce } from "debounce";
 
+import { CommonMixin } from "./common-mixin";
+
 export default {
   name: "JsonInput",
   props: {},
+  mixins: [CommonMixin],
   components: {
     PrismEditor
   },
@@ -53,10 +56,16 @@ export default {
       inputText: JSON.stringify(fixtures.sampleInput1, null, 2),
       errorMessage: "",
       enableDoneButton: true,
-      treatNullAsString: true
+      treatNullAsString: true,
+
+      previousText: null,
+      isSchemaExternallyModified: false
     };
   },
   methods: {
+    notifyOfSchemaModification() {
+      this.isSchemaExternallyModified = true;
+    },
     highlighter(code) {
       return Prism.highlight(code, Prism.languages.json, "json");
     },
@@ -65,12 +74,25 @@ export default {
       this.inputTextChanged();
     },
 
-    inputTextChangedInternal: debounce(function(e) {
+    inputTextChangedDebouncer: debounce(function(e) {
       this.inputTextChanged();
     }, 200),
 
-    inputTextChanged() {
+    async inputTextChanged() {
       this.errorMessage = "";
+
+      if (this.previousText !== null && this.isSchemaExternallyModified) {
+        let message =
+          "The changes you made to the schema will be lost. Continue?";
+        let confirmed = await this.confirm("Confirm change", message);
+        if (!confirmed) {
+          this.inputText = this.previousText;
+          return;
+        }
+        this.isSchemaExternallyModified = false;
+      }
+
+      this.previousText = this.inputText;
 
       let json = null;
       try {

@@ -53,6 +53,7 @@
             (!isUnified && inputTab !== 'schema') ||
               (isUnified && unifiedTab !== 'schema')
           "
+          @schema-modified="schemaModifiedDebouncer"
           ref="schemaPreviewRef"
         />
       </div>
@@ -122,6 +123,8 @@ import SchemaPreview from "../components/SchemaPreview.vue";
 import CodeGenerationConfig from "../components/CodeGenerationConfig.vue";
 import CodeOutput from "../components/CodeOutput.vue";
 
+import { debounce } from "debounce";
+
 export default {
   name: "PageIndex",
   components: { JsonInput, SchemaPreview, CodeGenerationConfig, CodeOutput },
@@ -141,7 +144,6 @@ export default {
 
   mounted() {
     this.isUnified = this.$q.platform.is.mobile;
-    this.isUnified = true; // for testing
     this.$refs.configRef.kickstart();
     this.$refs.jsonInputRef.kickstart();
   },
@@ -197,6 +199,22 @@ export default {
       }
 
       this.$refs.schemaPreviewRef.generatePreview(this.schema);
+
+      this.generateCode();
+    },
+
+    schemaModifiedDebouncer: debounce(function(schema) {
+      this.schemaModified(schema);
+    }, 200),
+
+    schemaModified(schema) {
+      this.schema = schema;
+
+      if (this.schema === null) {
+        this.generated = null;
+      }
+
+      this.$refs.jsonInputRef.notifyOfSchemaModification();
 
       this.generateCode();
     }
