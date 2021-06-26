@@ -1,16 +1,20 @@
 import { toPascalCase } from "./utils.js";
 
+const ROOT_OBJECT_NAME = "RootObject";
+const DEFAULT_OBJECT_POSTFIX = "Object";
+
 class JsonReSchemaToJavaPojoConverter {
   constructor() {
     this.pojos = {};
   }
 
   _makePojo(schema, name) {
-    var pojo = (this.pojos[name] = {
+    var pojo = {
       name,
       fields: {},
       isArray: schema.type === "array"
-    });
+    };
+    this.pojos[name] = pojo;
 
     // Not much to do for an array. Move onto it's child
     if (schema.type === "array") {
@@ -41,9 +45,7 @@ class JsonReSchemaToJavaPojoConverter {
 
       if (value.type === "object") {
         // Object
-        let valueName = value.preferredName
-          ? value.preferredName
-          : toPascalCase(key) + "Object";
+        let valueName = this._getPojoName(key, value);
         this._makePojo(value, valueName);
         pojo.fields[key].javaType = valueName;
       } else if (value.type === "array") {
@@ -54,9 +56,7 @@ class JsonReSchemaToJavaPojoConverter {
         pojo.fields[key].isArray = true;
         if (value.type === "object") {
           // Object
-          let valueName = value.preferredName
-            ? value.preferredName
-            : toPascalCase(key) + "Object";
+          let valueName = this._getPojoName(key, value);
           this._makePojo(value, valueName);
           pojo.fields[key].javaType = valueName;
         } else if (value.type === "array") {
@@ -117,7 +117,19 @@ class JsonReSchemaToJavaPojoConverter {
   convert(schema, target) {
     schema = JSON.parse(JSON.stringify(schema));
 
-    let preferredName = "RootObject";
+    let pojoName = this._getRootPojoName(schema);
+    this._makePojo(schema, pojoName);
+
+    for (let key in this.pojos) {
+      this._generatePojoContent(this.pojos[key]);
+    }
+
+    let keys = Object.keys(this.pojos);
+    return keys.map(key => this.pojos[key]);
+  }
+
+  _getRootPojoName(schema) {
+    let preferredName = ROOT_OBJECT_NAME;
     if (schema.type === "object") {
       if (schema.preferredName) {
         preferredName = schema.preferredName;
@@ -132,14 +144,13 @@ class JsonReSchemaToJavaPojoConverter {
         preferredName = schema.childKey.preferredName;
       }
     }
-    this._makePojo(schema, preferredName);
+    return preferredName;
+  }
 
-    for (let key in this.pojos) {
-      this._generatePojoContent(this.pojos[key]);
-    }
-
-    let keys = Object.keys(this.pojos);
-    return keys.map(key => this.pojos[key]);
+  _getPojoName(key, value) {
+    return value.preferredName
+      ? value.preferredName
+      : toPascalCase(key) + DEFAULT_OBJECT_POSTFIX;
   }
 }
 
