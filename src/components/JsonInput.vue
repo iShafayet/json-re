@@ -28,10 +28,12 @@
 <script>
 import * as fixtures from "../components/fixtures.js";
 
+import { JsonRe } from "../components/json-re-core.js";
+
 import {
-  JsonRe,
-  convertNullToNullableString
-} from "../components/json-re-core.js";
+  convertNullToNullableString,
+  generatePreferredNames
+} from "../components/json-re-mods";
 
 import Prism from "prismjs";
 import "prismjs/components/prism-json";
@@ -119,6 +121,8 @@ export default {
         if (this.treatNullAsString) {
           convertNullToNullableString(schema);
         }
+
+        generatePreferredNames(schema);
 
         console.log({ schema });
       } catch (ex) {
