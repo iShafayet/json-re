@@ -43,41 +43,17 @@ class JsonReSchemaToJavaPojoConverter {
         javaType: null
       };
 
+      if (value.type === "array") {
+        // Array
+        value = value.childKey;
+        pojo.fields[key].isArray = true;
+      }
+
       if (value.type === "object") {
         // Object
         let valueName = this._getPojoName(key, value);
         this._makePojo(value, valueName);
         pojo.fields[key].javaType = valueName;
-      } else if (value.type === "array") {
-        // Array
-
-        // TODO refactor - start
-        value = value.childKey;
-        pojo.fields[key].isArray = true;
-        if (value.type === "object") {
-          // Object
-          let valueName = this._getPojoName(key, value);
-          this._makePojo(value, valueName);
-          pojo.fields[key].javaType = valueName;
-        } else if (value.type === "array") {
-          // Array
-        } else {
-          // Primitives
-          switch (value.type) {
-            case "string":
-              pojo.fields[key].javaType = "String";
-              break;
-            case "number":
-              pojo.fields[key].javaType = "double";
-              break;
-            case "boolean":
-              pojo.fields[key].javaType = "boolean";
-              break;
-            default:
-              throw new Error("Unforseen event: Expected Object.");
-          }
-        }
-        // TODO refactor - end
       } else {
         // Primitives
         switch (value.type) {
@@ -91,7 +67,7 @@ class JsonReSchemaToJavaPojoConverter {
             pojo.fields[key].javaType = "boolean";
             break;
           default:
-            throw new Error("Unforseen event: Expected Object.");
+            throw new Error("Unforseen event: Expected known type.");
         }
       }
     }
