@@ -67,8 +67,13 @@ module.exports = function(/* ctx */) {
       },
 
       afterBuild({ quasarConf }) {
-        let fs = require("fs");
-        fs.renameSync("dist/spa", "docs");
+        const fs = require("fs");
+        const target = "docs";
+
+        if (fs.existsSync(target)) {
+          fs.rmdirSync(target, { recursive: true });
+        }
+        fs.renameSync("dist/spa", target);
         console.log("Moved dist directory.");
       }
     },
@@ -99,7 +104,7 @@ module.exports = function(/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Dialog']
+      plugins: ["Dialog"]
     },
 
     // animations: 'all', // --- includes all animations

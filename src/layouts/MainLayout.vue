@@ -115,10 +115,10 @@ export default {
     }
 
     return {
-      showWelcomeDialog: false,
-      appVersion: "0.0.3",
+      showWelcomeDialog: true,
+      appVersion: "0.2.1",
       tag: " (POC)",
-      appBuild: 1
+      appBuild: 20
     };
   },
   methods: {
