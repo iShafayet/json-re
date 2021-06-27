@@ -12,7 +12,9 @@
         >
           <div class="output-box-title">{{ outputFile.name }}</div>
           <div>
-            <pre><code v-html="outputFile.content"> </code></pre>
+            <pre
+              class="output-pre"
+            ><code class="output-code" v-html="outputFile.content"></code></pre>
             <!-- <code
               ><pre>{{ outputFile.content }}</pre>
             </code> -->
@@ -93,6 +95,11 @@ export default {
     background: #e2e2e2;
     padding: 10px;
     text-align: right;
+  }
+
+  .output-pre {
+    overflow: scroll !important;
+    max-width: calc(50vw - 45px);
   }
 
   .no-schema-message {
