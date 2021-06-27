@@ -98,7 +98,7 @@ export default {
   }
 
   .output-pre {
-    overflow: scroll !important;
+    overflow: auto !important;
     max-width: calc(50vw - 45px);
   }
 
