@@ -12,7 +12,7 @@ class JsonReSchemaToJavaPojoConverter {
     var pojo = {
       name,
       fields: {},
-      isArray: schema.type === "array"
+      arrayDepth: schema.type === "array" ? 1 : 0
     };
     this.pojos[name] = pojo;
 
@@ -21,7 +21,6 @@ class JsonReSchemaToJavaPojoConverter {
       schema = schema.childKey;
     }
 
-    // console.log(schema);
     // Code should never reach here.
     if (schema.type !== "object") {
       throw new Error("Unforseen event: Expected Object.");
@@ -44,10 +43,11 @@ class JsonReSchemaToJavaPojoConverter {
         schema: value
       };
 
-      if (value.type === "array") {
+      pojo.fields[key].arrayDepth = 0;
+      while (value.type === "array") {
         // Array
         value = value.childKey;
-        pojo.fields[key].isArray = true;
+        pojo.fields[key].arrayDepth += 1;
       }
 
       if (value.type === "object") {
@@ -113,9 +113,11 @@ class JsonReSchemaToJavaPojoConverter {
           content += `${indent}@Max(value=${field.schema.max})\n`;
         }
       }
-      content += `${indent}private ${field.javaType}${
-        field.isArray ? "[]" : ""
-      } ${field.name};\n`;
+
+      let arrayModifier = "";
+      for (let i = 0; i < field.arrayDepth; i++) arrayModifier += "[]";
+
+      content += `${indent}private ${field.javaType}${arrayModifier} ${field.name};\n`;
       if (options.javaxValidations && i !== keys.length - 1) content += "\n";
     }
 

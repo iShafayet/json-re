@@ -61,7 +61,7 @@ const sampleInput1 = [
   }
 ];
 
-const sampleInput2 = [
+const simpleCase1 = [
   {
     userId: 1,
     name: {
@@ -85,4 +85,21 @@ const sampleInput2 = [
   }
 ];
 
-export { sampleInput1, sampleInput2 };
+const complexCase1 = [
+  {
+    dimensionsArray: [
+      [1, 2],
+      [4, 2],
+      [9, 2]
+    ],
+    consumerArray: [
+      {
+        name: "James",
+        readPostIdArray: [1, 3, 4, 2]
+      }
+    ],
+    veryDeepArray: [[[[[1]]]]]
+  }
+];
+
+export { sampleInput1, simpleCase1, complexCase1 };
