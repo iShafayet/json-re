@@ -117,7 +117,7 @@ export default {
     return {
       showWelcomeDialog: true,
       appVersion: "0.2.1",
-      tag: " (POC)",
+      tag: " (Beta)",
       appBuild: 20
     };
   },
