@@ -24,19 +24,33 @@
             <q-checkbox
               v-model="target.options.javaxValidations"
               label="Generate validation annotations"
+              @input="generateCode"
             />
           </div>
           <div class="option-group">
             <div class="option-group-title">
               Apply lombok annotations
             </div>
-            <q-checkbox v-model="target.options.lombokGetter" label="@Getter" />
-            <q-checkbox v-model="target.options.lombokSetter" label="@Setter" />
             <q-checkbox
               v-model="target.options.lombokBuilder"
               label="@Builder"
+              @input="generateCode"
             />
-            <q-checkbox v-model="target.options.lombokData" label="@Data" />
+            <q-checkbox
+              v-model="target.options.lombokData"
+              label="@Data"
+              @input="generateCode"
+            />
+            <q-checkbox
+              v-model="target.options.lombokGetter"
+              label="@Getter"
+              @input="generateCode"
+            />
+            <q-checkbox
+              v-model="target.options.lombokSetter"
+              label="@Setter"
+              @input="generateCode"
+            />
           </div>
         </div>
       </div>
@@ -72,8 +86,8 @@ export default {
         },
         options: {
           javaxValidations: true,
-          lombokGetter: true,
-          lombokSetter: true,
+          lombokGetter: false,
+          lombokSetter: false,
           lombokData: true,
           lombokBuilder: true
         }

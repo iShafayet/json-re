@@ -20,6 +20,7 @@
       <q-checkbox
         v-model="treatNullAsString"
         label="Treat null values as nullable string."
+        @input="inputTextChangedDebouncer"
       />
     </div>
   </div>
@@ -60,7 +61,10 @@ export default {
       enableDoneButton: true,
       treatNullAsString: true,
 
-      previousText: null,
+      previous: {
+        inputText: null,
+        treatNullAsString: true
+      },
       isSchemaExternallyModified: false
     };
   },
@@ -76,25 +80,27 @@ export default {
       this.inputTextChanged();
     },
 
-    inputTextChangedDebouncer: debounce(function(e) {
+    inputTextChangedDebouncer: debounce(function(e = null) {
       this.inputTextChanged();
     }, 200),
 
     async inputTextChanged() {
       this.errorMessage = "";
 
-      if (this.previousText !== null && this.isSchemaExternallyModified) {
+      if (this.previous.inputText !== null && this.isSchemaExternallyModified) {
         let message =
           "The changes you made to the schema will be lost. Continue?";
         let confirmed = await this.confirm("Confirm change", message);
         if (!confirmed) {
-          this.inputText = this.previousText;
+          this.inputText = this.previous.inputText;
+          this.treatNullAsString = this.previous.treatNullAsString;
           return;
         }
         this.isSchemaExternallyModified = false;
       }
 
-      this.previousText = this.inputText;
+      this.previous.inputText = this.inputText;
+      this.previous.treatNullAsString = this.treatNullAsString;
 
       let json = null;
       try {
