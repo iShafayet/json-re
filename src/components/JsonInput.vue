@@ -2,7 +2,7 @@
   <div class="section-column input-column">
     <div class="input-textarea-container">
       <prism-editor
-        class="json-editor height-300"
+        class="json-editor"
         v-model="inputText"
         :highlight="highlighter"
         :line-numbers="true"
@@ -157,6 +157,11 @@ export default {
     font-size: 14px;
     line-height: 1.5;
     padding: 5px;
+  }
+
+  .prism-editor__textarea,
+  .prism-editor__editor {
+    overflow-wrap: anywhere !important;
   }
 
   .prism-editor__textarea:focus {

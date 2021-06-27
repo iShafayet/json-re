@@ -102,4 +102,18 @@ const complexCase1 = [
   }
 ];
 
-export { sampleInput1, simpleCase1, complexCase1 };
+const longDataCase1 = {
+  userId: 1999999999999912323132,
+  shortKey:
+    "A very long value repeated again and again many times in order to test the UI limits of the application",
+  shortKey2:
+    "averylongvaluewithoutanyspaceinbetweenandrepeatedmanytimesinordertottestthelimitsoftheuioftheapplicationaverylongvaluewithoutanyspaceinbetweenandrepeatedmanytimesinordertottestthelimitsoftheuioftheapplication",
+  averylongkeywithoutanyspaceinbetweenandrepeatedmanytimesinordertottestthelimitsoftheuioftheapplicationaverylongkeywithoutanyspaceinbetweenandrepeatedmanytimesinordertottestthelimitsoftheuioftheapplication:
+    "averylongvaluewithoutanyspaceinbetweenandrepeatedmanytimesinordertottestthelimitsoftheuioftheapplicationaverylongvaluewithoutanyspaceinbetweenandrepeatedmanytimesinordertottestthelimitsoftheuioftheapplication",
+  populousObject: {}
+};
+for (let i = 0; i < 100; i++) {
+  longDataCase1.populousObject["key" + i] = true;
+}
+
+export { sampleInput1, simpleCase1, complexCase1, longDataCase1 };
