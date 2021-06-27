@@ -28,6 +28,7 @@ class JsonRe {
     if (schema.type && schema.type !== type) {
       if (this.opt.onNullCollision === "allow" && type === "null") {
         schema.allowNull = true;
+        schema.hadNullCollision = true;
         return;
       }
 
@@ -36,15 +37,14 @@ class JsonRe {
           (type === "number" && schema.type === "string")) &&
         this.opt.onStringAndNumberCollision === "prefer-string"
       ) {
-        schema.type = "string";
-        schema.coerce = true;
-        return;
-      }
-
-      if (this.opt.onNullCollision === "allow" && schema.type === "null") {
-        schema.allowNull = true;
+        type = "string";
+        schema.wasCoerced = true;
       } else {
-        this._throwTypeMismatch(trace, schema.type, type);
+        if (this.opt.onNullCollision === "allow" && schema.type === "null") {
+          schema.allowNull = true;
+        } else {
+          this._throwTypeMismatch(trace, schema.type, type);
+        }
       }
     }
     schema.type = type;
@@ -65,34 +65,60 @@ class JsonRe {
         if (!schema.keys[key]) schema.keys[key] = {};
         this._process(val, schema.keys[key], `${trace}.${key}`);
       }
+    } else if (type == "string") {
+      this._guessStringLengthBounds(node, schema, trace);
+    } else if (type == "number") {
+      this._guessStringLengthBounds(node, schema, trace);
+    } else {
+      ("pass");
     }
   }
 
   process(jsonNode) {
-    // NOTE check for cyclic dependencies and get rid of
+    // NOTE in order to check for cyclic dependencies and get rid of
     // non-enumerable properties.
     jsonNode = JSON.parse(JSON.stringify(jsonNode));
 
     this._process(jsonNode, this.schema, "~");
     return this.schema;
   }
-}
 
-let prettyPrintSchema = (schema, name = "<root>", indent = "") => {
-  let output = "";
-  // output += indent + (schema.allowNull ? "nullable " : "") + schema.type + " " + name + "\n";
-  output += `${indent}${name}: ${schema.type}${
-    schema.allowNull ? " (nullable)" : ""
-  }${schema.coerce ? " (coerce)" : ""}\n`;
+  _guessStringLengthBounds(node, schema, trace) {
+    if (schema.type === "string" || schema.type === "number") {
+      // NOTE Also keeping lengths for numbers since a later
+      // entry may be coerced to string
 
-  if (schema.type === "array" && schema.childKey) {
-    output += prettyPrintSchema(schema.childKey, "<array-item>", indent + "  ");
-  } else if (schema.type === "object") {
-    for (let key in schema.keys) {
-      output += prettyPrintSchema(schema.keys[key], key, indent + "  ");
+      if (!("minLen" in schema)) {
+        schema.minLen = Number.MAX_SAFE_INTEGER;
+      }
+      if (!("maxLen" in schema)) {
+        schema.maxLen = 0;
+      }
+
+      if (String(node).length < schema.minLen) {
+        schema.minLen = String(node).length;
+      }
+      if (String(node).length > schema.maxLen) {
+        schema.maxLen = String(node).length;
+      }
+    }
+
+    if (schema.type === "number") {
+      if (!("min" in schema)) {
+        schema.min = Number.MAX_SAFE_INTEGER;
+      }
+      if (!("max" in schema)) {
+        schema.max = 0;
+      }
+
+      if (node < schema.min) {
+        schema.min = node;
+      }
+      if (node > schema.max) {
+        schema.max = node;
+      }
     }
   }
-  return output;
-};
+}
 
-export { JsonRe, prettyPrintSchema };
+export { JsonRe };

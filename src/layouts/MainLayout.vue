@@ -44,8 +44,7 @@
 
         <q-card-section>
           <div class="text-h6">
-            Generate Java POJOs, SQL tables, MongoDb schemas, Joi validation
-            directly from JSON.
+            Generate Java POJOs &amp; SQL tables directly from JSON.
           </div>
         </q-card-section>
 
@@ -62,8 +61,13 @@
             2. JSON R.E. Toolkit will intelligently reverse engineer it and
             generate schema.
             <br />
-            3. From the schema we can instantly generate Java POJO, SQL Tables,
-            MongoDb Schema, Joi validation and more.
+            3. From the schema we can instantly generate Java POJO, SQL Tables
+            and more.
+
+            <div style="margin-top: 8px; font-style: italic;">
+              Coming soon - MongoDb Schema, Mongoose, Joi validation, TypeScript
+              objects, SQL sequelize.
+            </div>
           </div>
 
           <div style="margin-top: 20px; text-align: center;">
@@ -111,7 +115,7 @@ export default {
     }
 
     return {
-      showWelcomeDialog: true,
+      showWelcomeDialog: false,
       appVersion: "0.0.3",
       tag: " (POC)",
       appBuild: 6

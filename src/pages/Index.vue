@@ -1,9 +1,35 @@
 <template>
   <q-page class="page index-page">
+    <!-- mobile-tabs - start -->
+    <q-tabs
+      mobile-arrows
+      outside-arrows
+      v-if="isUnified"
+      v-model="unifiedTab"
+      inline-label
+      align="justify"
+      raised
+      class="bg-primary text-white shadow-1 input-tabs"
+    >
+      <q-tab name="json" icon="code" label="JSON" />
+      <q-tab name="schema" icon="preview" label="Schema editor" />
+      <q-tab name="configuration" icon="settings" label="Configure output" />
+      <q-tab name="generated" icon="code" label="Generated code" />
+    </q-tabs>
+    <!-- mobile-tabs - end -->
+
+    <!-- desktop-tabs - start -->
     <div class="row">
       <!-- input columns - start -->
-      <div class="column col">
+      <div
+        class="column col"
+        :class="{ 'col-6': !isUnified, 'col-12': isUnified }"
+        :hidden="
+          !(isUnified && unifiedTab !== 'json' && unifiedTab !== 'schema')
+        "
+      >
         <q-tabs
+          v-if="!isUnified"
           v-model="inputTab"
           inline-label
           align="justify"
@@ -11,21 +37,42 @@
           class="bg-primary text-white shadow-1 input-tabs"
         >
           <q-tab name="json" icon="code" label="JSON" />
-          <q-tab name="schema" icon="preview" label="Schema preview" />
+          <q-tab name="schema" icon="preview" label="Schema editor" />
         </q-tabs>
 
         <JsonInput
-          :hidden="inputTab !== 'json'"
+          :hidden="
+            (!isUnified && inputTab !== 'json') ||
+              (isUnified && unifiedTab !== 'json')
+          "
           @schema-generated="schemaGenerated"
           ref="jsonInputRef"
         />
-        <SchemaPreview :hidden="inputTab !== 'schema'" ref="schemaPreviewRef" />
+        <SchemaPreview
+          :hidden="
+            (!isUnified && inputTab !== 'schema') ||
+              (isUnified && unifiedTab !== 'schema')
+          "
+          @schema-modified="schemaModifiedDebouncer"
+          ref="schemaPreviewRef"
+        />
       </div>
       <!-- input columns - end -->
 
       <!-- output columns - start -->
-      <div class="column col">
+      <div
+        class="column col"
+        :class="{ 'col-6': !isUnified, 'col-12': isUnified }"
+        :hidden="
+          !(
+            isUnified &&
+            unifiedTab !== 'configuration' &&
+            unifiedTab !== 'generated'
+          )
+        "
+      >
         <q-tabs
+          v-if="!isUnified"
           v-model="outputTab"
           inline-label
           align="justify"
@@ -40,14 +87,20 @@
         </q-tabs>
 
         <CodeOutput
-          :hidden="outputTab !== 'generated'"
+          :hidden="
+            (!isUnified && outputTab !== 'generated') ||
+              (isUnified && unifiedTab !== 'generated')
+          "
           :schema="schema"
           :target="target"
           :generated="generated"
           ref="codeOutputRef"
         />
         <CodeGenerationConfig
-          :hidden="outputTab !== 'configuration'"
+          :hidden="
+            (!isUnified && outputTab !== 'configuration') ||
+              (isUnified && unifiedTab !== 'configuration')
+          "
           :schema="schema"
           @config-updated="configUpdated"
           ref="configRef"
@@ -55,6 +108,7 @@
       </div>
       <!-- output columns - end -->
     </div>
+    <!-- desktop-tabs - end -->
   </q-page>
 </template>
 
@@ -69,14 +123,19 @@ import SchemaPreview from "../components/SchemaPreview.vue";
 import CodeGenerationConfig from "../components/CodeGenerationConfig.vue";
 import CodeOutput from "../components/CodeOutput.vue";
 
+import { debounce } from "debounce";
+
 export default {
   name: "PageIndex",
   components: { JsonInput, SchemaPreview, CodeGenerationConfig, CodeOutput },
   data() {
     return {
+      isUnified: false,
+      unifiedTab: "json",
       inputTab: "json",
       outputTab: "generated",
       // outputTab: "configuration",
+
       target: null,
       schema: null,
       generated: null
@@ -84,6 +143,7 @@ export default {
   },
 
   mounted() {
+    this.isUnified = this.$q.platform.is.mobile;
     this.$refs.configRef.kickstart();
     this.$refs.jsonInputRef.kickstart();
   },
@@ -139,6 +199,22 @@ export default {
       }
 
       this.$refs.schemaPreviewRef.generatePreview(this.schema);
+
+      this.generateCode();
+    },
+
+    schemaModifiedDebouncer: debounce(function(schema) {
+      this.schemaModified(schema);
+    }, 200),
+
+    schemaModified(schema) {
+      this.schema = schema;
+
+      if (this.schema === null) {
+        this.generated = null;
+      }
+
+      this.$refs.jsonInputRef.notifyOfSchemaModification();
 
       this.generateCode();
     }

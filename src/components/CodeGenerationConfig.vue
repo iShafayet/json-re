@@ -1,21 +1,59 @@
 <template>
   <div class="section-column code-generating-column">
-    <div v-if="schema">
-      <q-select
-        outlined
-        v-model="target.type"
-        :options="targetTypes"
-        label="Select target type"
-        style="margin-top: 20px; width: 100%"
-        @input="generateCode"
-      />
+    <div class="code-generation-config-container">
+      <div v-if="!schema" class="no-schema-message">
+        Enter a valid json data in the first tab to continue.
+      </div>
+      <div v-if="schema">
+        <q-select
+          outlined
+          v-model="target.type"
+          :options="targetTypes"
+          label="Select target type"
+          style="margin-top: 20px; width: 100%"
+          @input="generateCode"
+        />
 
-      <div style="margin-top: 20px;"></div>
-      <q-checkbox
-        v-model="target.treatNullAsString"
-        label="Treat null values as nullable string."
-        @input="generateCode"
-      />
+        <div style="margin-top: 20px;"></div>
+
+        <div class="java-pojo-options" v-if="target.type.value == 'java-pojo'">
+          <div class="option-group">
+            <div class="option-group-title">
+              Apply javax.validation.constraints
+            </div>
+            <q-checkbox
+              v-model="target.options.javaxValidations"
+              label="Generate validation annotations"
+              @input="generateCode"
+            />
+          </div>
+          <div class="option-group">
+            <div class="option-group-title">
+              Apply lombok annotations
+            </div>
+            <q-checkbox
+              v-model="target.options.lombokBuilder"
+              label="@Builder"
+              @input="generateCode"
+            />
+            <q-checkbox
+              v-model="target.options.lombokData"
+              label="@Data"
+              @input="generateCode"
+            />
+            <q-checkbox
+              v-model="target.options.lombokGetter"
+              label="@Getter"
+              @input="generateCode"
+            />
+            <q-checkbox
+              v-model="target.options.lombokSetter"
+              label="@Setter"
+              @input="generateCode"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -46,7 +84,13 @@ export default {
           label: "Java POJO",
           value: "java-pojo"
         },
-        treatNullAsString: true
+        options: {
+          javaxValidations: true,
+          lombokGetter: false,
+          lombokSetter: false,
+          lombokData: true,
+          lombokBuilder: true
+        }
       }
     };
   },
@@ -65,5 +109,27 @@ export default {
 
 <style lang="scss">
 .code-generating-column {
+  .code-generation-config-container {
+    padding: 10px;
+    background: #f2f2f2;
+    height: calc(80vh);
+    overflow: auto;
+  }
+
+  .no-schema-message {
+    font-family: "Courier New", Courier, monospace !important;
+    width: 100%;
+    text-align: center;
+    margin-top: 100px;
+  }
+
+  .java-pojo-options {
+    padding: 8px;
+  }
+
+  .option-group-title {
+    font-size: 16px;
+    margin-top: 20px;
+  }
 }
 </style>
