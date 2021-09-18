@@ -1,6 +1,9 @@
 <template>
   <div class="section-column code-generating-column">
-    <div class="code-generation-config-container">
+    <div
+      class="code-generation-config-container"
+      ref="codeGenerationConfigContainerRef"
+    >
       <div v-if="!schema" class="no-schema-message">
         Enter a valid json data in the first tab to continue.
       </div>
@@ -59,8 +62,11 @@
 </template>
 
 <script>
+import { CommonMixin } from "./common-mixin";
+
 export default {
   name: "CodeGenerationConfig",
+  mixins: [CommonMixin],
   props: {
     schema: {
       type: Object,
@@ -96,6 +102,11 @@ export default {
   },
 
   methods: {
+    resizeWorkingArea() {
+      let el = this.$refs.codeGenerationConfigContainerRef;
+      this.calculateAndSetWorkingAreaHeight(el, 50 + 80);
+    },
+
     kickstart() {
       this.generateCode();
     },
