@@ -10,7 +10,6 @@
           JSON Reverse Engineering Toolkit
         </q-toolbar-title>
 
-        <div>v{{ appVersion }}/b{{ appBuild }}{{ tag }}</div>
         <q-btn
           color="bg-primary"
           icon="help"
@@ -48,7 +47,7 @@
           </div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pt-none" style=" overflow-x: auto;">
           <img
             alt="JSON R.E. logo"
             src="~assets/welcome-graphics-1.png"
@@ -88,6 +87,9 @@
               >Sayem Shafayet</a
             >
           </div>
+          <div style="margin: 8px; font-size: 10px; text-align: center;">
+            v{{ appVersion }}/b{{ appBuild }}{{ tag }}
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -116,9 +118,9 @@ export default {
 
     return {
       showWelcomeDialog: true,
-      appVersion: "0.2.1",
+      appVersion: "0.3.1",
       tag: " (Beta)",
-      appBuild: 20
+      appBuild: 24
     };
   },
   methods: {
