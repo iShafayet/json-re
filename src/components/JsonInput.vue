@@ -1,6 +1,6 @@
 <template>
   <div class="section-column input-column">
-    <div class="input-textarea-container">
+    <div class="input-textarea-container" ref="inputTextareaContainerRef">
       <prism-editor
         class="json-editor"
         v-model="inputText"
@@ -68,7 +68,12 @@ export default {
       isSchemaExternallyModified: false
     };
   },
+
   methods: {
+    resizeWorkingArea() {
+      let el = this.$refs.inputTextareaContainerRef;
+      this.calculateAndSetWorkingAreaHeight(el, 50);
+    },
     notifyOfSchemaModification() {
       this.isSchemaExternallyModified = true;
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="section-column processing-column">
-    <div class="preview-schema-container">
+    <div class="preview-schema-container" ref="schemaPreviewRef">
       <div v-if="!schema" class="no-schema-message">
         Enter a valid json data in the first tab to continue.
       </div>
@@ -17,16 +17,24 @@
 <script>
 import EditableJsonEntity from "../components/EditableJsonEntity.vue";
 
+import { CommonMixin } from "./common-mixin";
+
 export default {
   name: "SchemaPreview",
   props: {},
   components: { EditableJsonEntity },
+  mixins: [CommonMixin],
+
   data() {
     return {
       schema: null
     };
   },
   methods: {
+    resizeWorkingArea() {
+      let el = this.$refs.schemaPreviewRef;
+      this.calculateAndSetWorkingAreaHeight(el, 50 + 80);
+    },
     generatePreview(schema) {
       this.schema = schema;
     },

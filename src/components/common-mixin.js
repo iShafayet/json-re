@@ -1,7 +1,32 @@
 import { date } from "quasar";
 
 export let CommonMixin = {
+  mounted() {
+    if (this.resizeWorkingArea) {
+      this.resizeWorkingArea();
+    }
+  },
+  created() {
+    if (this.resizeWorkingArea) {
+      window.addEventListener("resize", this.resizeWorkingArea);
+    }
+  },
+  destroyed() {
+    if (this.resizeWorkingArea) {
+      window.removeEventListener("resize", this.resizeWorkingArea);
+    }
+  },
   methods: {
+    calculateAndSetWorkingAreaHeight(el, padding) {
+      try {
+        let height = window.innerHeight;
+        let rect = el.getBoundingClientRect();
+        let remaining = height - rect.top - padding;
+        el.style.minHeight = remaining + "px";
+      } catch (ex) {
+        console.warn(ex);
+      }
+    },
     toDatetimeStamp(dateString) {
       if (!dateString) return null;
       return new Date(dateString).getTime() || null;
